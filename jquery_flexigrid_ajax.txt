@@ -1,0 +1,47 @@
+    <script type="text/javascript">
+		$(function() {
+			$("#actions").flexigrid({
+				url: '<?php echo base_url();?>actions/get_actions_by_user_id/<?php echo $target_user_profile['id'];?>',
+				dataType: 'json',
+				colModel : [
+					{display: 'First Name', name : 'first_name', width : 60, sortable : true, align: 'left', hide: false},
+					{display: 'Last Name', name : 'last_name', width : 60, sortable : true, align: 'left'},
+					{display: 'From', name : 'from_status', width : 80, sortable : true, align: 'left'},
+					{display: 'To', name : 'to_status', width : 80, sortable : true, align: 'left'},
+					{display: 'Note', name : 'note', width : 200, sortable : false, align: 'left'},
+					{display: 'Cost', name : 'cost', width : 40, sortable : true, align: 'left'},
+					{display: 'Date', name : 'date', width : 100, sortable : true, align: 'left'},
+					],
+				buttons: [
+					{name: 'Edit', bclass: 'edit', onpress : test}
+				],
+				searchitems : [
+					{display: 'First Name', name : 'first_name'},
+					{display: 'Last Name', name : 'last_name', isdefault: true}
+					],
+				sortname: "date",
+				sortorder: "desc",
+				usepager: true,
+				title: 'Actions',
+				useRp: false,
+				rp: 10,
+				showTableToggleBtn: false,
+				width: 700,
+				height: 310,
+				singleSelect: true
+			});   
+
+            $('#apply_status_change').click(function() {
+                $.post('<?php echo base_url();?>applications/change_application_status', {
+                    application_id: <?php echo $application['application_id'];?>,
+                    target_user_id: <?php echo $target_user_profile['id'];?>,
+                    old_status: '<?php echo $application['int_status'];?>',
+                    new_status: $('#int_status').val(),
+                    note: $('#note').val()
+                }, function(data, textStatus) {
+                    $('#message_area').text(data);
+					$("#actions").flexReload();
+                });
+            });
+        });
+    </script>
